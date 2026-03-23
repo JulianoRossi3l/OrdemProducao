@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ordem de Produção - Gauchão Restaurante</title>
+    <style>
+        /* ============================================================
+           1. AJUSTE O TAMANHO DA FONTE DE PREENCHIMENTO AQUI
+           ============================================================ */
+        :root {
+            --tamanho-fonte-preenchimento: 14px; 
+        }
+
+        @page {
+            size: A4;
+            margin: 0.5cm; /* Margem reduzida para caber as 15 linhas */
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .no-print {
+            margin-bottom: 10px;
+            background: #fff;
+            padding: 10px;
+            border: 1px solid #ccc;
+            width: 800px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .op-container {
+            background-color: white;
+            width: 800px;
+            padding: 0;
+            border: 1.5px solid #000;
+            display: flex;
+            flex-direction: column;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+        th, td {
+            border: 1px solid #000;
+            padding: 2px; /* Espaço mínimo para economizar papel */
+            font-size: 10px;
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        /* Cabeçalho Econômico (Sem fundo escuro) */
+        .header-main-cell {
+            background-color: #ffffff;
+            color: #000;
+            padding: 5px 15px;
+            border-bottom: 2px solid #000;
+        }
+
+        .header-flex {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-logo {
+            max-height: 60px; /* Ajuste conforme necessário */
+        }
+
+        .header-title {
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            text-align: right;
+            flex: 1;
+            margin-left: 15px;
+        }
+
+        .sub-header-container {
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 3px 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 10px;
+            border-bottom: 1px solid #000;
+        }
+
+        .label-cell {
+            font-weight: bold;
+            font-size: 9px;
+            text-transform: uppercase;
+            background-color: #ffffff; /* Fundo branco para economizar toner */
+            width: 120px;
+            text-align: left;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-family: Arial, sans-serif;
+            font-size: var(--tamanho-fonte-preenchimento);
+            background: transparent;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .item-textarea {
+            min-height: 20px;
+            display: block;
+            line-height: 1;
+            resize: none;
+            overflow: hidden;
+        }
+
+        /* Colunas */
+        .col-kg-prev { width: 65px; }
+        .col-item { width: auto; }
+        .col-camara { width: 110px; }
+        .col-status { width: 70px; }
+        .col-kg-pos { width: 70px; }
+        .col-hora { width: 80px; }
+
+        .signature-box {
+            height: 30px;
+            border-bottom: 1px solid #000;
+            margin-bottom: 2px;
+        }
+
+        .footer-document {
+            padding: 5px;
+            text-align: center;
+            font-size: 8px;
+            color: #333;
+            border-top: 1px solid #000;
+        }
+
+        @media print {
+            body { background-color: white; padding: 0; }
+            .no-print { display: none; }
+            .op-container { 
+                border: 1px solid #000; 
+                width: 100%; 
+                page-break-inside: avoid;
+            }
+        }
+
+        button { padding: 8px 15px; cursor: pointer; font-weight: bold; text-transform: uppercase; }
+        .btn-print { background-color: #000; color: #fff; border: none; }
+        .btn-clear { background-color: #fff; color: red; border: 1px solid red; }
+    </style>
+</head>
+<body>
+
+    <div class="no-print">
+        <button class="btn-clear" onclick="clearForm()">Limpar Tudo</button>
+        <button class="btn-print" onclick="window.print()">Imprimir OP</button>
+    </div>
+
+    <div class="op-container">
+        <!-- CABEÇALHO -->
+        <table>
+            <tr>
+                <td colspan="4" class="header-main-cell">
+                    <div class="header-flex">
+                        <img src="https://i.bj-share.info/5113cf48d47abe1abe1edc956fc96af2.png" class="header-logo" alt="Logo Gauchão">
+                        <div class="header-title">ORDEM DE PRODUÇÃO<br>GAUCHÃO RESTAURANTE E COZINHA INDUSTRIAL</div>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td class="label-cell">Número da OP:</td>
+                <td style="font-size: 14px; font-weight: bold; color: #000;">
+                    <span id="op_numero_display">...</span>
+                </td>
+                <td class="label-cell">Data de Emissão:</td>
+                <td><input type="date" id="data_emissao"></td>
+            </tr>
+            <tr>
+                <td class="label-cell">Responsável:</td>
+                <td>
+                    <select id="responsavel">
+                        <option value="">Selecione...</option>
+                        <option value="NOME 1">Chef Kellen</option>
+                        <option value="NOME 2">Natália Pacheco</option>
+                        <option value="NOME 3">Fabio</option>
+                        <option value="NOME 4">Wanderson</option>
+                    </select>
+                </td>
+                <td class="label-cell">Data de Produção:</td>
+                <td><input type="date" id="data_producao"></td>
+            </tr>
+            <tr>
+                <td class="label-cell">Executante:</td>
+                <td>
+                    <select id="executante">
+                        <option value="">Selecione...</option>
+                        <option value="NOME 1">Daiane</option>
+                        <option value="NOME 2">Wanderson</option>
+                        <option value="NOME 3">Eduardo</option>
+                        <option value="NOME 4">Cristiane</option>
+                        <option value="NOME 5">Laura</option>
+                        <option value="NOME 6">Maria</option> 
+                        <option value="NOME 7">Dirce</option>
+                    </select>
+                </td>
+                <td class="label-cell">Área de Produção:</td>
+                <td>
+                    <select id="area_producao">
+                        <option value="">Selecione...</option>
+                        <option value="Cozinha Quente">Cozinha</option>
+                        <option value="Cozinha Fria">FLV</option>
+                        <option value="Açougue">Açougue</option>
+                        <option value="Padaria">Padaria</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+
+        <div class="sub-header-container">
+            <span>Controle de Itens e Processos</span>
+            <span id="saudacao">...</span>
+        </div>
+
+        <table>
+            <tr style="background-color: #f2f2f2; font-weight: bold; font-size: 8px;">
+                <td class="col-kg-prev">KG FINAL<br>(PLAN.)</td>
+                <td class="col-item">ITEM / PROCESSO</td>
+                <td class="col-camara">CÂMARA<br>ARMAZENADA</td>
+                <td class="col-status">STATUS DA<br>PROD.</td>
+                <td class="col-kg-pos">KG PÓS<br>PROD.</td>
+                <td class="col-hora">HORA</td>
+            </tr>
+            
+            <script>
+                /* ============================================================
+                   2. PARA ADICIONAR OU REMOVER LINHAS, ALTERE O NÚMERO ABAIXO
+                   Atualmente está em 15. Se ultrapassar 1 página, diminua para 14.
+                   ============================================================ */
+                const numeroDeLinhas = 15; 
+
+                for(let i=1; i<=numeroDeLinhas; i++) {
+                    document.write(`
+                        <tr>
+                            <td class="col-kg-prev"><input type="text" placeholder="0.00"></td>
+                            <td class="col-item">
+                                <textarea class="item-textarea" oninput="autoGrow(this)" placeholder="..."></textarea>
+                            </td>
+                            <td class="col-camara">
+                                <textarea class="item-textarea" oninput="autoGrow(this)" placeholder="-"></textarea>
+                            </td>
+                            <td class="col-status"></td> 
+                            <td class="col-kg-pos"><input type="text" placeholder="0.00"></td>
+                            <td class="col-hora"><input type="time"></td>
+                        </tr>
+                    `);
+                }
+            </script>
+        </table>
+
+        <!-- OBSERVAÇÕES -->
+        <table>
+            <tr>
+                <td class="label-cell" style="border-top: none; width: 100%;">Observações / Ocorrências Técnicas:</td>
+            </tr>
+            <tr>
+                <td><textarea id="obs" style="height: 40px; padding: 2px; text-align: left; font-size: 11px;"></textarea></td>
+            </tr>
+        </table>
+
+        <!-- ASSINATURAS -->
+        <table style="border-bottom: none;">
+            <tr>
+                <td width="50%" style="padding: 5px 40px; border-top: none; border-bottom: none;">
+                    <div class="signature-box"></div>
+                    <div style="text-align: center; font-size: 9px; font-weight: bold;">Assinatura do Executante</div>
+                </td>
+                <td width="50%" style="padding: 5px 40px; border-top: none; border-bottom: none;">
+                    <div class="signature-box"></div>
+                    <div style="text-align: center; font-size: 9px; font-weight: bold;">Assinatura do Supervisor</div>
+                </td>
+            </tr>
+        </table>
+
+        <!-- RODAPÉ -->
+        <div class="footer-document">
+            Documento interno – Controle de Produção | Revisão: 01 | Data: 03/2026
+        </div>
+    </div>
+
+    <script>
+        function generateOPNumber() {
+            const now = new Date();
+            const opCode = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}-${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}`;
+            document.getElementById('op_numero_display').innerText = opCode;
+        }
+
+        function updateGreeting() {
+            const hour = new Date().getHours();
+            const target = document.getElementById('saudacao');
+            if (hour >= 5 && hour < 12) target.innerHTML = '&#128522; Bom Dia';
+            else if (hour >= 12 && hour < 18) target.innerHTML = '&#128578; Boa Tarde';
+            else target.innerHTML = '&#128564; Boa Noite';
+        }
+
+        function autoGrow(element) {
+            element.style.height = "5px";
+            element.style.height = (element.scrollHeight) + "px";
+        }
+
+        function clearForm() {
+            if(confirm("Deseja limpar todos os campos?")) {
+                document.querySelectorAll('input').forEach(i => i.value = '');
+                document.querySelectorAll('textarea').forEach(t => t.value = '');
+                document.querySelectorAll('select').forEach(s => s.selectedIndex = 0);
+                generateOPNumber();
+                document.getElementById('data_emissao').valueAsDate = new Date();
+                updateGreeting();
+            }
+        }
+
+        window.onload = () => {
+            generateOPNumber();
+            updateGreeting();
+            document.getElementById('data_emissao').valueAsDate = new Date();
+        };
+    </script>
+</body>
+</html>
