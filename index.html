@@ -24,7 +24,7 @@
             align-items: center;
         }
 
-        /* BARRA DE BOTÕES RESPONSIVA */
+        /* BARRA DE BOTÕES */
         .no-print {
             margin-bottom: 10px;
             background: #fff;
@@ -38,7 +38,6 @@
             box-sizing: border-box;
         }
 
-        /* CONTAINER PRINCIPAL */
         .op-container {
             background-color: white;
             width: 100%;
@@ -50,10 +49,9 @@
             box-sizing: border-box;
         }
 
-        /* COMPORTAMENTO DE TABELA RESPONSIVA */
         .table-responsive {
             width: 100%;
-            overflow-x: auto; /* Permite scroll lateral no celular */
+            overflow-x: auto;
             -webkit-overflow-scrolling: touch;
         }
 
@@ -61,7 +59,7 @@
             width: 100%;
             border-collapse: collapse;
             table-layout: fixed;
-            min-width: 600px; /* Garante que a tabela não esmague no celular */
+            min-width: 650px; /* Aumentado para garantir espaço das colunas */
         }
 
         th, td {
@@ -84,7 +82,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            flex-wrap: wrap; /* Ajusta no celular */
+            flex-wrap: wrap;
             gap: 10px;
         }
 
@@ -142,13 +140,13 @@
             overflow: hidden;
         }
 
-        /* LARGURA DAS COLUNAS */
+        /* LARGURA DAS COLUNAS AJUSTADA */
         .col-kg-prev { width: 60px; }
         .col-item { width: auto; }
-        .col-camara { width: 125px; }
-        .col-status { width: 60px; }
+        .col-camara { width: 115px; } /* Reduzido levemente */
+        .col-status { width: 95px; }  /* Aumentado para escrita manual de "OK / Pendente" */
         .col-kg-pos { width: 65px; }
-        .col-hora { width: 75px; }
+        .col-hora { width: 70px; }   /* Reduzido para compensar o Status */
 
         .signature-box {
             height: 35px;
@@ -164,17 +162,17 @@
             border-top: 1px solid #000;
         }
 
-        /* AJUSTES ESPECÍFICOS PARA CELULAR (TELA) */
+        /* RESPONSIVIDADE CELULAR */
         @media screen and (max-width: 600px) {
             body { padding: 5px; }
             .header-title { text-align: center; font-size: 12px; }
             .header-flex { justify-content: center; }
             .label-cell { width: 80px; font-size: 8px; }
-            input, select { font-size: 16px; /* Evita zoom automático no iPhone ao clicar */ }
+            input, select { font-size: 16px; }
             .no-print { justify-content: center; }
         }
 
-        /* REGRAS DE IMPRESSÃO - FORÇA O PADRÃO A4 */
+        /* IMPRESSÃO */
         @media print {
             body { background-color: white; padding: 0; }
             .no-print { display: none; }
@@ -265,14 +263,13 @@
             <span id="saudacao">...</span>
         </div>
 
-        <!-- ENVOLVENDO A TABELA PARA RESPONSIVIDADE -->
         <div class="table-responsive">
             <table>
                 <tr style="background-color: #f2f2f2; font-weight: bold; font-size: 8px;">
                     <td class="col-kg-prev">KG FINAL<br>(PLAN.)</td>
                     <td class="col-item">ITEM / PROCESSO</td>
                     <td class="col-camara">CÂMARA<br>ARMAZENADA</td>
-                    <td class="col-status">STATUS</td>
+                    <td class="col-status">STATUS DA<br>PRODUÇÃO</td>
                     <td class="col-kg-pos">KG PÓS</td>
                     <td class="col-hora">HORA</td>
                 </tr>
