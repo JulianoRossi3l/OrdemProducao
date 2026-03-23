@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ordem de Produção - Gauchão Restaurante</title>
     <style>
-        /* ============================================================
-           1. AJUSTE O TAMANHO DA FONTE DE PREENCHIMENTO AQUI
-           ============================================================ */
         :root {
             --tamanho-fonte-preenchimento: 14px; 
         }
@@ -27,30 +24,44 @@
             align-items: center;
         }
 
+        /* BARRA DE BOTÕES RESPONSIVA */
         .no-print {
             margin-bottom: 10px;
             background: #fff;
             padding: 10px;
             border: 1px solid #ccc;
-            width: 800px;
+            width: 100%;
+            max-width: 800px;
             display: flex;
             justify-content: flex-end;
             gap: 10px;
+            box-sizing: border-box;
         }
 
+        /* CONTAINER PRINCIPAL */
         .op-container {
             background-color: white;
-            width: 800px;
+            width: 100%;
+            max-width: 800px;
             padding: 0;
             border: 1.5px solid #000;
             display: flex;
             flex-direction: column;
+            box-sizing: border-box;
+        }
+
+        /* COMPORTAMENTO DE TABELA RESPONSIVA */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto; /* Permite scroll lateral no celular */
+            -webkit-overflow-scrolling: touch;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             table-layout: fixed;
+            min-width: 600px; /* Garante que a tabela não esmague no celular */
         }
 
         th, td {
@@ -61,10 +72,11 @@
             text-align: center;
         }
 
+        /* CABEÇALHO */
         .header-main-cell {
             background-color: #ffffff;
             color: #000;
-            padding: 5px 15px;
+            padding: 10px;
             border-bottom: 2px solid #000;
         }
 
@@ -72,19 +84,21 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            flex-wrap: wrap; /* Ajusta no celular */
+            gap: 10px;
         }
 
         .header-logo {
-            max-height: 60px;
+            max-height: 50px;
         }
 
         .header-title {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
             text-transform: uppercase;
             text-align: right;
             flex: 1;
-            margin-left: 15px;
+            min-width: 200px;
         }
 
         .sub-header-container {
@@ -92,7 +106,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 3px 10px;
+            padding: 5px 10px;
             font-weight: bold;
             text-transform: uppercase;
             font-size: 10px;
@@ -104,7 +118,7 @@
             font-size: 9px;
             text-transform: uppercase;
             background-color: #ffffff;
-            width: 120px;
+            width: 100px;
             text-align: left;
         }
 
@@ -117,27 +131,27 @@
             background: transparent;
             box-sizing: border-box;
             text-align: center;
-            appearance: none; /* Remove seta padrão em alguns navegadores no print */
+            padding: 4px 0;
         }
 
         .item-textarea {
-            min-height: 20px;
+            min-height: 25px;
             display: block;
-            line-height: 1;
+            line-height: 1.2;
             resize: none;
             overflow: hidden;
         }
 
-        /* Colunas */
-        .col-kg-prev { width: 65px; }
+        /* LARGURA DAS COLUNAS */
+        .col-kg-prev { width: 60px; }
         .col-item { width: auto; }
-        .col-camara { width: 130px; } /* Aumentado levemente para caber os nomes das câmeras */
-        .col-status { width: 70px; }
-        .col-kg-pos { width: 70px; }
-        .col-hora { width: 80px; }
+        .col-camara { width: 125px; }
+        .col-status { width: 60px; }
+        .col-kg-pos { width: 65px; }
+        .col-hora { width: 75px; }
 
         .signature-box {
-            height: 30px;
+            height: 35px;
             border-bottom: 1px solid #000;
             margin-bottom: 2px;
         }
@@ -150,18 +164,32 @@
             border-top: 1px solid #000;
         }
 
+        /* AJUSTES ESPECÍFICOS PARA CELULAR (TELA) */
+        @media screen and (max-width: 600px) {
+            body { padding: 5px; }
+            .header-title { text-align: center; font-size: 12px; }
+            .header-flex { justify-content: center; }
+            .label-cell { width: 80px; font-size: 8px; }
+            input, select { font-size: 16px; /* Evita zoom automático no iPhone ao clicar */ }
+            .no-print { justify-content: center; }
+        }
+
+        /* REGRAS DE IMPRESSÃO - FORÇA O PADRÃO A4 */
         @media print {
             body { background-color: white; padding: 0; }
             .no-print { display: none; }
             .op-container { 
                 border: 1px solid #000; 
                 width: 100%; 
+                max-width: 100%;
                 page-break-inside: avoid;
             }
-            select { appearance: none; } /* Garante que a seta do select não saia na impressão */
+            .table-responsive { overflow: visible; }
+            table { min-width: 100% !important; }
+            input, select, textarea { font-size: var(--tamanho-fonte-preenchimento) !important; }
         }
 
-        button { padding: 8px 15px; cursor: pointer; font-weight: bold; text-transform: uppercase; }
+        button { padding: 10px 12px; cursor: pointer; font-weight: bold; text-transform: uppercase; border-radius: 4px; }
         .btn-print { background-color: #000; color: #fff; border: none; }
         .btn-clear { background-color: #fff; color: red; border: 1px solid red; }
     </style>
@@ -169,7 +197,7 @@
 <body>
 
     <div class="no-print">
-        <button class="btn-clear" onclick="clearForm()">Limpar Tudo</button>
+        <button class="btn-clear" onclick="clearForm()">Limpar</button>
         <button class="btn-print" onclick="window.print()">Imprimir OP</button>
     </div>
 
@@ -186,10 +214,8 @@
             </tr>
             <tr>
                 <td class="label-cell">Número da OP:</td>
-                <td style="font-size: 14px; font-weight: bold; color: #000;">
-                    <span id="op_numero_display">...</span>
-                </td>
-                <td class="label-cell">Data de Emissão:</td>
+                <td style="font-size: 14px; font-weight: bold;"><span id="op_numero_display">...</span></td>
+                <td class="label-cell">Data Emissão:</td>
                 <td><input type="date" id="data_emissao"></td>
             </tr>
             <tr>
@@ -203,7 +229,7 @@
                         <option value="Wanderson">Wanderson</option>
                     </select>
                 </td>
-                <td class="label-cell">Data de Produção:</td>
+                <td class="label-cell">Data Produção:</td>
                 <td><input type="date" id="data_producao"></td>
             </tr>
             <tr>
@@ -220,7 +246,7 @@
                         <option value="Dirce">Dirce</option>
                     </select>
                 </td>
-                <td class="label-cell">Área de Produção:</td>
+                <td class="label-cell">Área:</td>
                 <td>
                     <select id="area_producao">
                         <option value="">Selecione...</option>
@@ -239,45 +265,47 @@
             <span id="saudacao">...</span>
         </div>
 
-        <table>
-            <tr style="background-color: #f2f2f2; font-weight: bold; font-size: 8px;">
-                <td class="col-kg-prev">KG FINAL<br>(PLAN.)</td>
-                <td class="col-item">ITEM / PROCESSO</td>
-                <td class="col-camara">CÂMARA<br>ARMAZENADA</td>
-                <td class="col-status">STATUS DA<br>PROD.</td>
-                <td class="col-kg-pos">KG PÓS<br>PROD.</td>
-                <td class="col-hora">HORA</td>
-            </tr>
-            
-            <script>
-                const numeroDeLinhas = 15; 
-
-                for(let i=1; i<=numeroDeLinhas; i++) {
-                    document.write(`
-                        <tr>
-                            <td class="col-kg-prev"><input type="text" placeholder="0.00"></td>
-                            <td class="col-item">
-                                <textarea class="item-textarea" oninput="autoGrow(this)" placeholder="..."></textarea>
-                            </td>
-                            <td class="col-camara">
-                                <select>
-                                    <option value="">-</option>
-                                    <option value="Câmera Fria 01">Câmera Fria 01</option>
-                                    <option value="Câmera Fria 02">Câmera Fria 02</option>
-                                    <option value="Câmera Fria 03">Câmera Fria 03</option>
-                                    <option value="Câmera Fria 04">Câmera Fria 04</option>
-                                    <option value="Câmera de Degelo">Câmera de Degelo</option>
-                                    <option value="Câmera FLV">Câmera FLV</option>
-                                </select>
-                            </td>
-                            <td class="col-status"></td> 
-                            <td class="col-kg-pos"><input type="text" placeholder="0.00"></td>
-                            <td class="col-hora"><input type="time"></td>
-                        </tr>
-                    `);
-                }
-            </script>
-        </table>
+        <!-- ENVOLVENDO A TABELA PARA RESPONSIVIDADE -->
+        <div class="table-responsive">
+            <table>
+                <tr style="background-color: #f2f2f2; font-weight: bold; font-size: 8px;">
+                    <td class="col-kg-prev">KG FINAL<br>(PLAN.)</td>
+                    <td class="col-item">ITEM / PROCESSO</td>
+                    <td class="col-camara">CÂMARA<br>ARMAZENADA</td>
+                    <td class="col-status">STATUS</td>
+                    <td class="col-kg-pos">KG PÓS</td>
+                    <td class="col-hora">HORA</td>
+                </tr>
+                
+                <script>
+                    const numeroDeLinhas = 15; 
+                    for(let i=1; i<=numeroDeLinhas; i++) {
+                        document.write(`
+                            <tr>
+                                <td class="col-kg-prev"><input type="text" placeholder="0.00"></td>
+                                <td class="col-item">
+                                    <textarea class="item-textarea" oninput="autoGrow(this)" placeholder="..."></textarea>
+                                </td>
+                                <td class="col-camara">
+                                    <select>
+                                        <option value="">-</option>
+                                        <option value="Câmera Fria 01">C. Fria 01</option>
+                                        <option value="Câmera Fria 02">C. Fria 02</option>
+                                        <option value="Câmera Fria 03">C. Fria 03</option>
+                                        <option value="Câmera Fria 04">C. Fria 04</option>
+                                        <option value="Câmera de Degelo">C. Degelo</option>
+                                        <option value="Câmera FLV">C. FLV</option>
+                                    </select>
+                                </td>
+                                <td class="col-status"></td> 
+                                <td class="col-kg-pos"><input type="text" placeholder="0.00"></td>
+                                <td class="col-hora"><input type="time"></td>
+                            </tr>
+                        `);
+                    }
+                </script>
+            </table>
+        </div>
 
         <!-- OBSERVAÇÕES -->
         <table>
@@ -285,25 +313,24 @@
                 <td class="label-cell" style="border-top: none; width: 100%;">Observações / Ocorrências Técnicas:</td>
             </tr>
             <tr>
-                <td><textarea id="obs" style="height: 40px; padding: 2px; text-align: left; font-size: 11px;"></textarea></td>
+                <td><textarea id="obs" style="height: 40px; padding: 5px; text-align: left; font-size: 11px;"></textarea></td>
             </tr>
         </table>
 
         <!-- ASSINATURAS -->
         <table style="border-bottom: none;">
             <tr>
-                <td width="50%" style="padding: 5px 40px; border-top: none; border-bottom: none;">
+                <td width="50%" style="padding: 10px 20px; border-top: none; border-bottom: none;">
                     <div class="signature-box"></div>
                     <div style="text-align: center; font-size: 9px; font-weight: bold;">Assinatura do Supervisor</div>
                 </td>
-                <td width="50%" style="padding: 5px 40px; border-top: none; border-bottom: none;">
+                <td width="50%" style="padding: 10px 20px; border-top: none; border-bottom: none;">
                     <div class="signature-box"></div>
                     <div style="text-align: center; font-size: 9px; font-weight: bold;">Assinatura do Executante</div>
                 </td>
             </tr>
         </table>
 
-        <!-- RODAPÉ -->
         <div class="footer-document">
             Documento interno – Controle de Produção | Revisão: 01 | Data: 03/2026
         </div>
